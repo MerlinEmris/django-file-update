@@ -1,0 +1,36 @@
+{
+
+    "delete model file on change": {
+        "prefix": ["modfile", "model-file-change-delete"],
+        "body": [
+            "@receiver(models.signals.post_delete, sender=${1:model})",
+            "def auto_delete_${1:model}_${2:field}_on_delete(sender, instance, **kwargs):",
+            "    if instance.${2:field}:",
+            "        try:",
+            "            if os.path.isfile(instance.${2:field}.path):",
+            "                os.remove(instance.${2:field}.path)",
+            "        except:",
+            "            ${0:pass}",
+            "",
+            "@receiver(models.signals.post_delete, sender=${1:model})",
+            "def auto_delete_${1:model}_${2:field}_on_change(sender, instance, **kwargs):",
+            "    if not instance.pk:",
+            "        instance.${2:field} = compress(instance.${2:field})",
+            "        return False",
+            "    try:",
+            "        old_file = sender.objects.get(pk=instance.pk).${2:field}",
+            "    except sender.DoesNotExist:",
+            "        return False",
+            "    try:",
+            "        new_file = instance.${2:field}",
+            "        if not old_file == new_file:",
+            "            if os.path.isfile(old_file.path):",
+            "                os.remove(old_file.path)",
+            "                instance.${2:field} = compress(instance.${2:field})",
+            "    except:",
+            "        ${0:pass}"
+        ],
+        "description": "delete models file when model file changed!"
+    }
+
+}
