@@ -82,7 +82,7 @@ def auto_delete_Item_image_on_change(sender, instance, **kwargs):
 -First method deletes image file when item obj was deleted
 -Second one to remove image when item image is changed
 
-If you are using vscode ide than you can user this snippet.
+If you are using vscode ide than you can use this snippet.
 ```json
 {
 
